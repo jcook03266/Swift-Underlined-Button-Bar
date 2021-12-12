@@ -6,6 +6,9 @@
 import Foundation
 import UIKit
 
+import Foundation
+import UIKit
+
 /** A UIView that hosts an array of buttons that have an 'underline' UIView beneath them which moves from button to button when the user presses on them*/
 public class underlinedButtonBar: UIView{
     var buttons: [UIButton]
@@ -41,6 +44,8 @@ public class underlinedButtonBar: UIView{
         stackView.alignment = .center
         stackView.distribution = .fillEqually
         stackView.spacing = 10
+        //Note: This doesn't autoresize the views to fill the stackview, don't use it
+        //stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.isUserInteractionEnabled = true
         stackView.semanticContentAttribute = .forceLeftToRight
         
@@ -115,9 +120,20 @@ public class underlinedButtonBar: UIView{
         }
     }
     
+    /** Returns the index of a passed button in the stackview's arranged subview if it's present*/
+    func getIndexOf(this passedButton: UIButton)->Int?{
+        var this_index: Int? = nil
+        for (index, button) in stackView.arrangedSubviews.enumerated(){
+            if passedButton == button{
+                this_index = index
+            }
+        }
+        return this_index
+    }
+    
     /** Returns the offset of the passed button in the stackview*/
-    func getOffsetOf(this passedButton: UIButton)->CGFloat{
-        var this_offSet: CGFloat = 0
+    func getOffsetOf(this passedButton: UIButton)->CGFloat?{
+        var this_offSet: CGFloat? = nil
         for (index, _) in stackView.arrangedSubviews.enumerated(){
             let button = stackView.arrangedSubviews[index] as! UIButton
             let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
@@ -128,6 +144,11 @@ public class underlinedButtonBar: UIView{
         }
         
         return this_offSet
+    }
+    
+    /** Returns the offset of the first button in the stackview*/
+    func getOffsetOfFirstButton()->CGFloat{
+        return getOffsetOf(this: self.buttons[0])!
     }
     
     /** Returns the totals distance from the first element to the last element*/
