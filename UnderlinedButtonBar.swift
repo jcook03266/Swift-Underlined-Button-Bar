@@ -47,25 +47,30 @@ public class underlinedButtonBar: UIView{
         stackView.semanticContentAttribute = .forceLeftToRight
         
         for button in buttons{
-            stackView.addArrangedSubview(button)
+            /** Prevent duplicate buttons from being added by mistake b/c we can't always have nice things*/
+            if !stackView.arrangedSubviews.contains(button){
+                stackView.addArrangedSubview(button)
+            }
         }
-  
+        
         underlineTrack.frame = CGRect(x: 0, y: stackView.frame.maxY, width: width, height: underlineHeight)
         
         underlineTrack.backgroundColor = underlineTrackColor
         underline.backgroundColor = underlineColor
         
-        /** Make the underline the size of the first button's title label and position it directly underneath that first button*/
-        underline.frame.size.width = (buttons[0].titleLabel?.frame.width)!
-        underline.frame.size.height = underlineHeight
-        
-        /** Coerce the view stored at this index in the stackview into being a UIButton because that's what's only being stored in this stackview anyways*/
-        let button = stackView.arrangedSubviews[0] as! UIButton
-        
-        /** This is the offset from the minX of the button's frame to the title label inside of it*/
-        let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
-        
-        underline.frame.origin = CGPoint(x: offSet, y: 0)
+        /** Wait until all view sizes are computed to set the position of the underline*/
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){[self] in
+            /** Coerce the view stored at this index in the stackview into being a UIButton because that's what's only being stored in this stackview anyways*/
+            let button = stackView.arrangedSubviews[0] as! UIButton
+            
+            /** Make the underline the size of the first button's title label and position it directly underneath that first button*/
+            underline.frame.size.width = button.titleLabel!.frame.width
+            underline.frame.size.height = underlineHeight
+            
+            /** This is the offset from the minX of the button's frame to the title label inside of it*/
+            let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
+            underline.frame.origin = CGPoint(x: offSet, y: 0)
+        }
         
         self.addSubview(stackView)
         self.addSubview(underlineTrack)
@@ -74,14 +79,20 @@ public class underlinedButtonBar: UIView{
     
     /** Moves the underline to the specified butto IF the button is in the button array*/
     func moveUnderLineTo(this passedButton: UIButton){
-        for (index, button) in buttons.enumerated(){
+        for (index, _) in stackView.arrangedSubviews.enumerated(){
+            let button = stackView.arrangedSubviews[index] as! UIButton
+            let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
+            
             if passedButton == button{
-                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseIn){[self] in
-                    let button = stackView.arrangedSubviews[index] as! UIButton
-                    
-                    let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
-       
-                underline.frame.size.width = (buttons[index].titleLabel?.frame.width)!
+                if animated{
+                    UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseIn){[self] in
+        
+                        underline.frame.size.width = button.titleLabel!.frame.width
+                        underline.frame.origin = CGPoint(x: offSet, y: 0)
+                    }
+                }
+                else{
+                    underline.frame.size.width = button.titleLabel!.frame.width
                     underline.frame.origin = CGPoint(x: offSet, y: 0)
                 }
             }
@@ -92,3 +103,4 @@ public class underlinedButtonBar: UIView{
         fatalError("init(coder:) has not been implemented")
     }
 }
+
