@@ -9,24 +9,24 @@
             let pageIndex = round(scrollView.contentOffset.x/scrollView.frame.width)
             
             /** Start from the offset of the first button then move until the total distance between the first and last button is covered*/
-            let scrollingDistanceComputation = buttonBar!.getOffsetOf(this: databaseButton) + ((buttonBar!.getTotalDistance()) * CGFloat(scrollView.contentOffset.x/(scrollView.frame.width * 3)))
+            let scrollingDistanceComputation = buttonBar!.getOffsetOfFirstButton() + ((buttonBar!.getTotalDistance()) * CGFloat(scrollView.contentOffset.x/(scrollView.frame.width * CGFloat(buttonBar!.buttons.count-1))))
             
             /** Shift the underline along the total distance between the first and last offset in the track according to the percentage of the scrollview scrolled*/
             buttonBar!.underline.frame.origin = CGPoint(x: scrollingDistanceComputation, y: 0)
             
             switch pageIndex{
             case 0:
-                buttonBar!.resizeTheUnderlineFor(this: databaseButton)
                 currentPage = 0
+                buttonBar!.resizeTheUnderlineFor(this: buttonBar!.buttons[currentPage])
             case 1:
-                buttonBar!.resizeTheUnderlineFor(this: coreDataButton)
                 currentPage = 1
+                buttonBar!.resizeTheUnderlineFor(this: buttonBar!.buttons[currentPage])
             case 2:
-                buttonBar!.resizeTheUnderlineFor(this: metricsButton)
                 currentPage = 2
+                buttonBar!.resizeTheUnderlineFor(this: buttonBar!.buttons[currentPage])
             case 3:
-                buttonBar!.resizeTheUnderlineFor(this: adminsButton)
                 currentPage = 3
+                buttonBar!.resizeTheUnderlineFor(this: buttonBar!.buttons[currentPage])
             default:
                 break
             }
@@ -55,16 +55,16 @@
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01){[self] in
         switch currentPage{
         case 0:
-            buttonBar?.moveUnderLineTo(this: databaseButton)
+            buttonBar!.moveUnderLineTo(this: buttonBar!.buttons[currentPage])
             searchController!.searchBar.placeholder = "Search for a table"
         case 1:
-            buttonBar?.moveUnderLineTo(this: coreDataButton)
+            buttonBar!.moveUnderLineTo(this: buttonBar!.buttons[currentPage])
             searchController!.searchBar.placeholder = "Search for an entity"
         case 2:
-            buttonBar?.moveUnderLineTo(this: metricsButton)
+            buttonBar!.moveUnderLineTo(this: buttonBar!.buttons[currentPage])
             searchController!.searchBar.placeholder = "Search for a statistic"
         case 3:
-            buttonBar?.moveUnderLineTo(this: adminsButton)
+            buttonBar!.moveUnderLineTo(this: buttonBar!.buttons[currentPage])
             searchController!.searchBar.placeholder = "Search for an admin"
         default:
             break
@@ -80,25 +80,3 @@
         turnPage()
     }
     /** ScrollView Button Bar Methods*/
-
-    /** Objc methods for navigating between the different views in the paged horizontal scrollview*/
-    @objc func databaseButtonPressed(sender: UIButton){
-        currentPage = 0
-        turnPage()
-    }
-    
-    @objc func coreDataButtonPressed(sender: UIButton){
-        currentPage = 1
-        turnPage()
-    }
-    
-    @objc func metricsButtonPressed(sender: UIButton){
-        currentPage = 2
-        turnPage()
-    }
-    
-    @objc func adminsButtonPressed(sender: UIButton){
-        currentPage = 3
-        turnPage()
-    }
-    /** Objc methods for navigating between the different views in the paged horizontal scrollview*/
