@@ -39,10 +39,8 @@ public class underlinedButtonBar: UIView{
         stackView = UIStackView(frame: self.frame)
         stackView.frame.size.height = stackView.frame.height - underlineHeight
         stackView.alignment = .center
-        stackView.distribution = .fillProportionally
+        stackView.distribution = .fillEqually
         stackView.spacing = 10
-        //Note: This doesn't autoresize the views to fill the stackview, don't use it
-        //stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.isUserInteractionEnabled = true
         stackView.semanticContentAttribute = .forceLeftToRight
         
@@ -99,8 +97,54 @@ public class underlinedButtonBar: UIView{
         }
     }
     
+    /** Resizes the underline to correspond to the passedButton's titlelabel's width*/
+    func resizeTheUnderlineFor(this passedButton: UIButton){
+        for (index, _) in stackView.arrangedSubviews.enumerated(){
+            let button = stackView.arrangedSubviews[index] as! UIButton
+            
+            if passedButton == button{
+                if animated{
+                    UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseIn){[self] in
+                        underline.frame.size.width = button.titleLabel!.frame.width
+                    }
+                }
+                else{
+                    underline.frame.size.width = button.titleLabel!.frame.width
+                }
+            }
+        }
+    }
+    
+    /** Returns the offset of the passed button in the stackview*/
+    func getOffsetOf(this passedButton: UIButton)->CGFloat{
+        var this_offSet: CGFloat = 0
+        for (index, _) in stackView.arrangedSubviews.enumerated(){
+            let button = stackView.arrangedSubviews[index] as! UIButton
+            let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
+            
+            if passedButton == button{
+                this_offSet = offSet
+            }
+        }
+        
+        return this_offSet
+    }
+    
+    /** Returns the totals distance from the first element to the last element*/
+    func getTotalDistance()->CGFloat{
+        let firstButton = stackView.arrangedSubviews[0] as! UIButton
+        let lastButton = stackView.arrangedSubviews[stackView.arrangedSubviews.count-1] as! UIButton
+        
+        let firstOffset = (firstButton.titleLabel?.frame.minX)! + firstButton.frame.minX
+        let lastOffset = (lastButton.titleLabel?.frame.minX)! + lastButton.frame.minX
+        
+        /** The distance between the first and last offset is the total distance needed to be covered by the underline if animated to move with the swipe of the user*/
+        return (lastOffset - firstOffset)
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
 
