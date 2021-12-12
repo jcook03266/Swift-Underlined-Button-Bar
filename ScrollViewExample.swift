@@ -80,3 +80,25 @@
         turnPage()
     }
     /** ScrollView Button Bar Methods*/
+
+/** Objc methods for navigating between the different views in the paged horizontal scrollview*/
+    @objc func databaseButtonPressed(sender: UIButton){
+        currentPage = buttonBar!.getIndexOf(this: sender)!
+        turnPage()
+    }
+    
+    @objc func coreDataButtonPressed(sender: UIButton){
+        currentPage = buttonBar!.getIndexOf(this: sender)!
+        turnPage()
+    }
+    
+    @objc func metricsButtonPressed(sender: UIButton){
+        currentPage = buttonBar!.getIndexOf(this: sender)!
+        turnPage()
+    }
+    
+    @objc func adminsButtonPressed(sender: UIButton){
+        currentPage = buttonBar!.getIndexOf(this: sender)!
+        turnPage()
+    }
+    /** Objc methods for navigating between the different views in the paged horizontal scrollview*/
