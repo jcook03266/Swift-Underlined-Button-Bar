@@ -1,10 +1,9 @@
+//
 //  underlinedButtonBar.swift
+//  Inspec
 //
 //  Created by Justin Cook on 12/11/21.
 //
-
-import Foundation
-import UIKit
 
 import Foundation
 import UIKit
@@ -62,16 +61,16 @@ public class underlinedButtonBar: UIView{
         underline.backgroundColor = underlineColor
         
         /** Wait until all view sizes are computed to set the position of the underline*/
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){[self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25){[self] in
             /** Coerce the view stored at this index in the stackview into being a UIButton because that's what's only being stored in this stackview anyways*/
             let button = stackView.arrangedSubviews[0] as! UIButton
             
-            /** Make the underline the size of the first button's title label and position it directly underneath that first button*/
-            underline.frame.size.width = button.titleLabel!.frame.width
+            /** Make the underline the size of the first button's content and position it directly underneath that first button*/
+            underline.frame.size.width = button.intrinsicContentSize.width
             underline.frame.size.height = underlineHeight
             
-            /** This is the offset from the minX of the button's frame to the title label inside of it*/
-            let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
+            /** This is the offset from the minX of the button's frame to center of its content*/
+            let offSet = button.frame.minX + (button.frame.width/2 - button.intrinsicContentSize.width/2)
             underline.frame.origin = CGPoint(x: offSet, y: 0)
         }
         
@@ -84,25 +83,25 @@ public class underlinedButtonBar: UIView{
     func moveUnderLineTo(this passedButton: UIButton){
         for (index, _) in stackView.arrangedSubviews.enumerated(){
             let button = stackView.arrangedSubviews[index] as! UIButton
-            let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
+            let offSet = button.frame.minX + (button.frame.width/2 - button.intrinsicContentSize.width/2)
             
             if passedButton == button{
                 if animated{
                     UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseIn){[self] in
         
-                        underline.frame.size.width = button.titleLabel!.frame.width
+                        underline.frame.size.width = button.intrinsicContentSize.width
                         underline.frame.origin = CGPoint(x: offSet, y: 0)
                     }
                 }
                 else{
-                    underline.frame.size.width = button.titleLabel!.frame.width
+                    underline.frame.size.width = button.intrinsicContentSize.width
                     underline.frame.origin = CGPoint(x: offSet, y: 0)
                 }
             }
         }
     }
     
-    /** Resizes the underline to correspond to the passedButton's titlelabel's width*/
+    /** Resizes the underline to correspond to the passedButton's intrinsic width*/
     func resizeTheUnderlineFor(this passedButton: UIButton){
         for (index, _) in stackView.arrangedSubviews.enumerated(){
             let button = stackView.arrangedSubviews[index] as! UIButton
@@ -110,11 +109,11 @@ public class underlinedButtonBar: UIView{
             if passedButton == button{
                 if animated{
                     UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseIn){[self] in
-                        underline.frame.size.width = button.titleLabel!.frame.width
+                        underline.frame.size.width = button.intrinsicContentSize.width
                     }
                 }
                 else{
-                    underline.frame.size.width = button.titleLabel!.frame.width
+                    underline.frame.size.width = button.intrinsicContentSize.width
                 }
             }
         }
@@ -136,7 +135,7 @@ public class underlinedButtonBar: UIView{
         var this_offSet: CGFloat? = nil
         for (index, _) in stackView.arrangedSubviews.enumerated(){
             let button = stackView.arrangedSubviews[index] as! UIButton
-            let offSet = (button.titleLabel?.frame.minX)! + button.frame.minX
+            let offSet = button.frame.minX + (button.frame.width/2 - button.intrinsicContentSize.width/2)
             
             if passedButton == button{
                 this_offSet = offSet
@@ -156,8 +155,8 @@ public class underlinedButtonBar: UIView{
         let firstButton = stackView.arrangedSubviews[0] as! UIButton
         let lastButton = stackView.arrangedSubviews[stackView.arrangedSubviews.count-1] as! UIButton
         
-        let firstOffset = (firstButton.titleLabel?.frame.minX)! + firstButton.frame.minX
-        let lastOffset = (lastButton.titleLabel?.frame.minX)! + lastButton.frame.minX
+        let firstOffset = firstButton.frame.minX + (firstButton.frame.width/2 - firstButton.intrinsicContentSize.width/2)
+        let lastOffset = lastButton.frame.minX + (lastButton.frame.width/2 - lastButton.intrinsicContentSize.width/2)
         
         /** The distance between the first and last offset is the total distance needed to be covered by the underline if animated to move with the swipe of the user*/
         return (lastOffset - firstOffset)
@@ -167,5 +166,3 @@ public class underlinedButtonBar: UIView{
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-
