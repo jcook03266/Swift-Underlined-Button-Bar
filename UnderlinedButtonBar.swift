@@ -19,6 +19,7 @@ public class underlinedButtonBar: UIView{
     var underlineHeight: CGFloat
     var underlineColor: UIColor
     var underlineTrackColor: UIColor
+    var currentlySelectedButton: UIButton!
     
     /** Each button will be positioned inside of this stackview horizontally with adequate spacing in between them*/
     var stackView = UIStackView()
@@ -65,6 +66,8 @@ public class underlinedButtonBar: UIView{
             /** Coerce the view stored at this index in the stackview into being a UIButton because that's what's only being stored in this stackview anyways*/
             let button = stackView.arrangedSubviews[0] as! UIButton
             
+            currentlySelectedButton = button
+            
             /** Make the underline the size of the first button's content and position it directly underneath that first button*/
             underline.frame.size.width = button.intrinsicContentSize.width
             underline.frame.size.height = underlineHeight
@@ -86,6 +89,7 @@ public class underlinedButtonBar: UIView{
             let offSet = button.frame.minX + (button.frame.width/2 - button.intrinsicContentSize.width/2)
             
             if passedButton == button{
+                currentlySelectedButton = button
                 if animated{
                     UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseIn){[self] in
         
