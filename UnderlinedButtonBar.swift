@@ -62,7 +62,7 @@ public class underlinedButtonBar: UIView{
         underline.backgroundColor = underlineColor
         
         /** Wait until all view sizes are computed to set the position of the underline*/
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){[self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6){[self] in
             /** Coerce the view stored at this index in the stackview into being a UIButton because that's what's only being stored in this stackview anyways*/
             let button = stackView.arrangedSubviews[0] as! UIButton
             
